@@ -1,0 +1,20 @@
+'.platform-linux atom-workspace.ide-haskell':
+  'ctrl-shift-R': 'ide-haskell-hasktags:show-tags'
+
+'.platform-linux .ide-haskell atom-text-editor[data-grammar~="haskell"]':
+  'ctrl-r': 'ide-haskell-hasktags:show-file-tags'
+  'ctrl-alt-down': 'ide-haskell-hasktags:go-to-declaration'
+
+'.platform-win32 atom-workspace.ide-haskell':
+  'ctrl-shift-R': 'ide-haskell-hasktags:show-tags'
+
+'.platform-win32 .ide-haskell atom-text-editor[data-grammar~="haskell"]':
+  'ctrl-r': 'ide-haskell-hasktags:show-file-tags'
+  'ctrl-alt-down': 'ide-haskell-hasktags:go-to-declaration'
+
+'.platform-darwin atom-workspace.ide-haskell':
+  'cmd-shift-R': 'ide-haskell-hasktags:show-tags'
+
+'.platform-darwin .ide-haskell atom-text-editor[data-grammar~="haskell"]':
+  'cmd-r': 'ide-haskell-hasktags:show-file-tags'
+  'cmd-alt-down': 'ide-haskell-hasktags:go-to-declaration'

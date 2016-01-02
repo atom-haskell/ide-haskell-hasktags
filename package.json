@@ -1,0 +1,28 @@
+{
+  "name": "ide-haskell-hasktags",
+  "main": "./lib/ide-haskell-hasktags",
+  "version": "0.0.0",
+  "description": "A short description of your package",
+  "keywords": [
+  ],
+  "activationHooks": [
+    "language-haskell:grammar-used"
+  ],
+  "repository": "https://github.com/atom-haskell/ide-haskell-hasktags",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "dependencies": {
+    "atom-space-pen-views": "^2.0.3",
+    "chokidar": "^1.0"
+  },
+  "consumedServices": {
+    "ide-haskell-upi": {
+      "description": "Uses ide-haskell's unified pluggable interface",
+      "versions": {
+        "0.0.1": "consumeUPI"
+      }
+    }
+  }
+}
