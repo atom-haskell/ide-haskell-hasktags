@@ -2,8 +2,13 @@
   "name": "ide-haskell-hasktags",
   "main": "./lib/ide-haskell-hasktags",
   "version": "0.0.0",
-  "description": "A short description of your package",
+  "description": "Hasktags-powered replacement for symbols-view on Haskell projects",
   "keywords": [
+    "ide-haskell",
+    "ide",
+    "haskell",
+    "hasktags",
+    "symbols-view"
   ],
   "activationHooks": [
     "language-haskell:grammar-used"
