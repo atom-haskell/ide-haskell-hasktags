@@ -9,11 +9,14 @@ module.exports = IdeHaskellHasktags =
       default: "hasktags"
       description: "Path to hasktags executable"
 
-  showList: (tags) ->
+  showList: (editor, tags) ->
     new TagsListView tags, @tags.inProgress, (tag) =>
-      @open(tag)
+      @open(editor, tag)
 
-  open: (tag) ->
+  open: (editor, tag) ->
+    @stack.push
+      uri: editor.getURI()
+      line: editor.getLastCursor().getBufferRow()
     atom.workspace.open tag.uri,
       initialLine: tag.point.row
       searchAllPanes: true
@@ -26,6 +29,11 @@ module.exports = IdeHaskellHasktags =
       'ide-haskell-hasktags:show-tags': =>
         return unless @tags?
         @showList @tags.listTags()
+      'ide-haskell-hasktags:go-back': =>
+        if (prevpos = @stack.pop())?
+          atom.workspace.open prevpos.uri,
+            initialLine: prevpos.line
+            searchAllPanes: true
     @disposables.add atom.commands.add 'atom-text-editor',
       'ide-haskell-hasktags:show-file-tags': ({target}) =>
         return unless @tags?
@@ -73,23 +81,13 @@ module.exports = IdeHaskellHasktags =
           tags = @tags.findTag(symbol)
           switch tags.length
             when 0 then null
-            when 1 then @open tags[0]
-            else @showList tags
+            when 1 then @open editor, tags[0]
+            else @showList editor, tags
 
     @upidisp.add atom.contextMenu.add
       'atom-text-editor[data-grammar~="haskell"]': [
           label: 'Go to Declaration'
           command: 'ide-haskell-hasktags:go-to-declaration'
-      ]
-    @upidisp.add atom.menu.add [
-        label: 'Haskell IDE'
-        submenu: [
-          label: 'Hasktags'
-          submenu: [
-              label: 'Go to Declaration'
-              command: 'ide-haskell-hasktags:go-to-declaration'
-          ]
-        ]
       ]
 
     @upidisp
