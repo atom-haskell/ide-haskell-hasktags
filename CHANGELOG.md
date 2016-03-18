@@ -1,3 +1,6 @@
+## 0.0.3
+* Fix #5
+
 ## 0.0.2
 * Go-back command
 
