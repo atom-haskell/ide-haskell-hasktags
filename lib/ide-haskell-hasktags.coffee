@@ -26,9 +26,9 @@ module.exports = IdeHaskellHasktags =
     setTimeout (=> @tags = new Tags), 1000
     @disposables = new CompositeDisposable
     @disposables.add atom.commands.add 'atom-workspace',
-      'ide-haskell-hasktags:show-tags': =>
+      'ide-haskell-hasktags:show-tags': ({target}) =>
         return unless @tags?
-        @showList @tags.listTags()
+        @showList target.getModel(), @tags.listTags()
       'ide-haskell-hasktags:go-back': =>
         if (prevpos = @stack.pop())?
           atom.workspace.open prevpos.uri,
@@ -37,7 +37,7 @@ module.exports = IdeHaskellHasktags =
     @disposables.add atom.commands.add 'atom-text-editor',
       'ide-haskell-hasktags:show-file-tags': ({target}) =>
         return unless @tags?
-        @showList @tags.listTags(target.getModel().getURI())
+        @showList target.getModel(), @tags.listTags(target.getModel().getURI())
     @disposables.add atom.contextMenu.add
       'atom-text-editor[data-grammar~="haskell"]': [
           label: 'Show File Tags'
