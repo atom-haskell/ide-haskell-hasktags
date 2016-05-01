@@ -1,3 +1,6 @@
+## 0.0.4
+* Remove bogus serialization bit
+
 ## 0.0.3
 * Fix #5
 
