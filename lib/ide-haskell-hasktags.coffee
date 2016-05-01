@@ -95,6 +95,3 @@ module.exports = IdeHaskellHasktags =
   deactivate: ->
     @disposables.dispose()
     @tags.destroy()
-
-  serialize: ->
-    ideHaskellHasktagsViewState: @ideHaskellHasktagsView.serialize()
