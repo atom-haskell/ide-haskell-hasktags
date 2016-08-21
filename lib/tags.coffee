@@ -6,31 +6,48 @@ chokidar = require 'chokidar'
 module.exports=
 class Tags
   constructor: ->
+    @disposables = new CompositeDisposable
     @tags = new Map
     @watcher = {}
-    atom.project.getPaths().forEach (dir) =>
-      @update dir
-      @watcher[dir] = chokidar.watch dir,
-        useFsEvents: true
-        ignoreInitial: true
-        ignored: (f, s) ->
-          return false unless s?
-          return false if s.mode & 0o0040000
-          # console.log f, s
-          not (f.endsWith('.hs') or f.endsWith('.lhs') )
-      @watcher[dir]
-      .on 'add', (path) =>
-        @update path
-      .on 'change', (path) =>
-        @update path
-      .on 'unlink', (path) =>
-        @tags.delete path
+    @watchDirs(atom.project.getPaths())
+    @disposables.add atom.project.onDidChangePaths (dirs) =>
+      @watchDirs(dirs)
 
   destroy: ->
-    for k, dir of @watcher
-      dir.close()
+    for dir, w of @watcher
+      w.close()
+    @disposables.dispose()
+    @disposables = null
     @watcher = null
     @tags = null
+
+  watchDirs: (dirs) ->
+    # Remove old dirs
+    for dir, w of @watcher
+      if dirs.indexOf(dir) is -1
+        w.close()
+        delete @watcher[dir]
+    # Watch new dirs
+    dirs.forEach (dir) =>
+      @watchDir(dir) unless @watcher[dir]?
+
+  watchDir: (dir) ->
+    @update dir
+    @watcher[dir] = chokidar.watch dir,
+      useFsEvents: true
+      ignoreInitial: true
+      ignored: (f, s) ->
+        return false unless s?
+        return false if s.mode & 0o0040000
+        # console.log f, s
+        not (f.endsWith('.hs') or f.endsWith('.lhs') )
+    @watcher[dir]
+    .on 'add', (path) =>
+      @update path
+    .on 'change', (path) =>
+      @update path
+    .on 'unlink', (path) =>
+      @tags.delete path
 
   update: (dir) ->
     @inProgress = true
