@@ -7,9 +7,10 @@ module.exports=
 class Tags
   constructor: ->
     @tags = new Map
+    @watcher = {}
     atom.project.getPaths().forEach (dir) =>
       @update dir
-      @watcher = chokidar.watch dir,
+      @watcher[dir] = chokidar.watch dir,
         useFsEvents: true
         ignoreInitial: true
         ignored: (f, s) ->
@@ -17,7 +18,7 @@ class Tags
           return false if s.mode & 0o0040000
           # console.log f, s
           not (f.endsWith('.hs') or f.endsWith('.lhs') )
-      @watcher
+      @watcher[dir]
       .on 'add', (path) =>
         @update path
       .on 'change', (path) =>
@@ -26,7 +27,8 @@ class Tags
         @tags.delete path
 
   destroy: ->
-    @watcher.close()
+    for k, dir of @watcher
+      dir.close()
     @watcher = null
     @tags = null
 
