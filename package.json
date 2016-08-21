@@ -1,7 +1,7 @@
 {
   "name": "ide-haskell-hasktags",
   "main": "./lib/ide-haskell-hasktags",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Hasktags-powered replacement for symbols-view on Haskell projects",
   "keywords": [
     "ide-haskell",
