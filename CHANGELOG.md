@@ -1,3 +1,7 @@
+## 0.0.5
+* Watch project path changes
+* Fix resource leak
+
 ## 0.0.4
 * Remove bogus serialization bit
 
