@@ -67,15 +67,12 @@ module.exports = IdeHaskellHasktags =
         editor = target.getModel()
         buffer = editor.getBuffer()
         upi.withEventRange {editor, detail}, ({crange}) =>
-          regex = /[\w'.]+/
           {start, end} = buffer.rangeForRow crange.start.row
           crange2 = {start: crange.start, end: crange.end}
-          buffer.backwardsScanInRange regex, [start, crange.start],
-            ({range, stop}) ->
-              crange2.start = range.start
-          buffer.scanInRange regex, [crange.end, end],
-            ({range, stop}) ->
-              crange2.end = range.end
+          left = buffer.getTextInRange [start, crange.start]
+          crange2.start.column = left.search(/[\w']*$/)
+          right = buffer.getTextInRange [crange.end, end]
+          crange2.end.column += right.search(/[^\w']/)
 
           symbol = buffer.getTextInRange crange2
           tags = @tags.findTag(symbol)
