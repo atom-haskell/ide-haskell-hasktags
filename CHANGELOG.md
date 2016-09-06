@@ -1,3 +1,6 @@
+## 0.0.6
+* Fix some symbol search bugs
+
 ## 0.0.5
 * Watch project path changes
 * Fix resource leak
