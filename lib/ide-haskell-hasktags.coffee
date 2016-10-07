@@ -6,8 +6,9 @@ module.exports = IdeHaskellHasktags =
   config:
     hasktagsPath:
       type: "string"
-      default: "hasktags"
-      description: "Path to hasktags executable"
+      default: "hasktags.js"
+      description: "Path to hasktags executable; if set to 'hasktags.js'
+                    (default) will use bundled ghcjs-powered implementation"
 
   showList: (editor, tags) ->
     new TagsListView tags, @tags.inProgress, (tag) =>

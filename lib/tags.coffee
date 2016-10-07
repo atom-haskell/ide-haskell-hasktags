@@ -1,4 +1,5 @@
-{CompositeDisposable, Point, File, BufferedProcess} = require 'atom'
+{CompositeDisposable, Point, File, BufferedProcess,
+BufferedNodeProcess} = require 'atom'
 CP = require 'child_process'
 {EOL} = require 'os'
 chokidar = require 'chokidar'
@@ -53,8 +54,16 @@ class Tags
     @inProgress = true
     fn = false
     curfile = null
-    new BufferedProcess
-      command: atom.config.get 'ide-haskell-hasktags.hasktagsPath'
+    cmd = atom.config.get 'ide-haskell-hasktags.hasktagsPath'
+    if cmd is 'hasktags.js'
+      {sep} = require 'path'
+      pkgpath = atom.packages.getActivePackage('ide-haskell-hasktags').path
+      cmd = "#{pkgpath}#{sep}bin#{sep}hasktags.js"
+      BP = BufferedNodeProcess
+    else
+      BP = BufferedProcess
+    new BP
+      command: cmd
       args: ['-eRo-', dir]
       stdout: (data) =>
         if error?

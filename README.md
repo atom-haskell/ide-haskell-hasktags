@@ -15,8 +15,10 @@ Atom Packages:
 
 Haskell packages:
 
-* [hasktags](https://hackage.haskell.org/package/hasktags)
+* [hasktags](https://hackage.haskell.org/package/hasktags) -- optional since v0.0.7
 
 ## Configuration
 
 Set full path to `hasktags` executable in package settings. For example, if you installed hasktags into `$HOME/.cabal/` (default cabal location), use `/path/to/home/dir/.cabal/bin/hasktags`. Specifics *will* depend on platform.
+
+Since 0.0.7, hasktags is bundled with the package and bundled version is used by default. It runs on top of nodejs though (via the magic of ghcjs), so a "real" binary will likely be faster.
