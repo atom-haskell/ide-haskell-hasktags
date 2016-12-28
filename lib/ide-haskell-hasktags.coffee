@@ -27,18 +27,18 @@ module.exports = IdeHaskellHasktags =
     setTimeout (=> @tags = new Tags), 1000
     @disposables = new CompositeDisposable
     @disposables.add atom.commands.add 'atom-workspace',
-      'ide-haskell-hasktags:show-tags': ({target}) =>
+      'ide-haskell-hasktags:show-tags': ({currentTarget}) =>
         return unless @tags?
-        @showList target.getModel(), @tags.listTags()
+        @showList currentTarget.getModel(), @tags.listTags()
       'ide-haskell-hasktags:go-back': =>
         if (prevpos = @stack.pop())?
           atom.workspace.open prevpos.uri,
             initialLine: prevpos.line
             searchAllPanes: true
     @disposables.add atom.commands.add 'atom-text-editor',
-      'ide-haskell-hasktags:show-file-tags': ({target}) =>
+      'ide-haskell-hasktags:show-file-tags': ({currentTarget}) =>
         return unless @tags?
-        @showList target.getModel(), @tags.listTags(target.getModel().getURI())
+        @showList currentTarget.getModel(), @tags.listTags(currentTarget.getModel().getURI())
     @disposables.add atom.contextMenu.add
       'atom-text-editor[data-grammar~="haskell"]': [
           label: 'Show File Tags'
@@ -63,9 +63,9 @@ module.exports = IdeHaskellHasktags =
     @disposables.add @upidisp
 
     @upidisp.add atom.commands.add 'atom-text-editor',
-      'ide-haskell-hasktags:go-to-declaration': ({target, detail}) =>
+      'ide-haskell-hasktags:go-to-declaration': ({currentTarget, detail}) =>
         return unless @tags?
-        editor = target.getModel()
+        editor = currentTarget.getModel()
         buffer = editor.getBuffer()
         upi.withEventRange {editor, detail}, ({crange}) =>
           {start, end} = buffer.rangeForRow crange.start.row
@@ -84,7 +84,7 @@ module.exports = IdeHaskellHasktags =
 
     @upidisp.add atom.contextMenu.add
       'atom-text-editor[data-grammar~="haskell"]': [
-          label: 'Go to Declaration'
+          label: 'Goto Declaration'
           command: 'ide-haskell-hasktags:go-to-declaration'
       ]
 
