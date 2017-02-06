@@ -1,3 +1,7 @@
+## 0.0.8
+* s/target/currentTarget/
+* Update LICENSE
+
 ## 0.0.7
 * Bundle ghcjs-powered hasktags with package
 
