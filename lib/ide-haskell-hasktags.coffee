@@ -15,6 +15,7 @@ module.exports = IdeHaskellHasktags =
       @open(editor, tag)
 
   open: (editor, tag) ->
+    editor ?= atom.workspace.getActiveTextEditor()
     @stack.push
       uri: editor.getURI()
       line: editor.getLastCursor().getBufferRow()
@@ -27,9 +28,9 @@ module.exports = IdeHaskellHasktags =
     setTimeout (=> @tags = new Tags), 1000
     @disposables = new CompositeDisposable
     @disposables.add atom.commands.add 'atom-workspace',
-      'ide-haskell-hasktags:show-tags': ({currentTarget}) =>
+      'ide-haskell-hasktags:show-tags': =>
         return unless @tags?
-        @showList currentTarget.getModel(), @tags.listTags()
+        @showList null, @tags.listTags()
       'ide-haskell-hasktags:go-back': =>
         if (prevpos = @stack.pop())?
           atom.workspace.open prevpos.uri,
