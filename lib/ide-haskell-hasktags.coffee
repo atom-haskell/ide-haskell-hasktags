@@ -1,4 +1,4 @@
-{CompositeDisposable, Point} = require 'atom'
+{CompositeDisposable} = require 'atom'
 Tags = require './tags'
 TagsListView = require './tags-list-view'
 
@@ -20,12 +20,12 @@ module.exports = IdeHaskellHasktags =
       uri: editor.getURI()
       line: editor.getLastCursor().getBufferRow()
     atom.workspace.open tag.uri,
-      initialLine: tag.point.row
+      initialLine: tag.line
       searchAllPanes: true
 
   activate: (state) ->
     @stack = []
-    setTimeout (=> @tags = new Tags), 1000
+    @tags = new Tags
     @disposables = new CompositeDisposable
     @disposables.add atom.commands.add 'atom-workspace',
       'ide-haskell-hasktags:show-tags': =>

@@ -1,4 +1,4 @@
-{CompositeDisposable, Point, File, BufferedProcess,
+{CompositeDisposable, File, BufferedProcess,
 BufferedNodeProcess} = require 'atom'
 CP = require 'child_process'
 {EOL} = require 'os'
@@ -57,8 +57,7 @@ class Tags
     cmd = atom.config.get 'ide-haskell-hasktags.hasktagsPath'
     if cmd is 'hasktags.js'
       {sep} = require 'path'
-      pkgpath = atom.packages.getActivePackage('ide-haskell-hasktags').path
-      cmd = "#{pkgpath}#{sep}bin#{sep}hasktags.js"
+      cmd = "#{__dirname}#{sep}..#{sep}bin#{sep}hasktags.js"
       BP = BufferedNodeProcess
     else
       BP = BufferedProcess
@@ -81,11 +80,11 @@ class Tags
             else
               rxr = /^.*\x7f(.*)\x01(\d+),(\d+)$/.exec line
               continue unless rxr?
-              [_, tagName, line, col] = rxr
+              [_, tagName, line, line1] = rxr
               if curfile.has tagName
-                curfile.get(tagName).push new Point(parseInt(line), parseInt(col))
+                curfile.get(tagName).push parseInt(line)
               else
-                curfile.set tagName, [new Point(parseInt(line), parseInt(col))]
+                curfile.set tagName, [parseInt(line)]
       exit: =>
         @inProgress = false
 
@@ -93,21 +92,21 @@ class Tags
     res = []
     unless uri?
       @tags.forEach (tagMap, uri) ->
-        tagMap.forEach (points, tag) ->
-          points.forEach (point) ->
-            res.push {tag, uri, point}
+        tagMap.forEach (lines, tag) ->
+          lines.forEach (line) ->
+            res.push {tag, uri, line}
     else
       tagMap = @tags.get uri
       if tagMap?
-        tagMap.forEach (points, tag) ->
-          points.forEach (point) ->
-            res.push {tag, uri, point}
+        tagMap.forEach (lines, tag) ->
+          lines.forEach (line) ->
+            res.push {tag, uri, line}
     return res
 
   findTag: (tag) ->
     res = []
     @tags.forEach (tagMap, uri) ->
-      points = tagMap.get(tag)
-      points?.forEach? (point) ->
-        res.push {tag, uri, point}
+      lines = tagMap.get(tag)
+      lines?.forEach? (line) ->
+        res.push {tag, uri, line}
     return res
