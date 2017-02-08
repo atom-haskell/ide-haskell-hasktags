@@ -1,3 +1,8 @@
+## 0.0.10
+* Fixes, refactors & some specs
+* Show both definition and implementation if far apart
+* Add coffeelint
+
 ## 0.0.9
 * Fix #8
 
