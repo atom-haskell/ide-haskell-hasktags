@@ -64,12 +64,12 @@ class Tags
       BP = BufferedProcess
     new BP
       command: cmd
-      args: ['-eRo-', dir]
+      args: ['-eRo-', '--ignore-close-implementation', dir]
       stdout: (data) =>
         if error?
           throw error
         lines = data.split EOL
-        for line in lines.slice(0,-1)
+        for line in lines.slice(0, -1)
           switch
             when line is "\x0c"
               fn = true
@@ -82,8 +82,10 @@ class Tags
               rxr = /^.*\x7f(.*)\x01(\d+),(\d+)$/.exec line
               continue unless rxr?
               [_, tagName, line, col] = rxr
-              curfile.set tagName,
-                new Point(parseInt(line), parseInt(col))
+              if curfile.has tagName
+                curfile.get(tagName).push new Point(parseInt(line), parseInt(col))
+              else
+                curfile.set tagName, [new Point(parseInt(line), parseInt(col))]
       exit: =>
         @inProgress = false
 
@@ -91,19 +93,21 @@ class Tags
     res = []
     unless uri?
       @tags.forEach (tagMap, uri) ->
-        tagMap.forEach (point, tag) ->
-          res.push {tag, uri, point}
+        tagMap.forEach (points, tag) ->
+          points.forEach (point) ->
+            res.push {tag, uri, point}
     else
       tagMap = @tags.get uri
       if tagMap?
-        tagMap.forEach (point, tag) ->
-          res.push {tag, uri, point}
+        tagMap.forEach (points, tag) ->
+          points.forEach (point) ->
+            res.push {tag, uri, point}
     return res
 
   findTag: (tag) ->
     res = []
     @tags.forEach (tagMap, uri) ->
-      point = tagMap.get(tag)
-      if point?
+      points = tagMap.get(tag)
+      points?.forEach? (point) ->
         res.push {tag, uri, point}
     return res
