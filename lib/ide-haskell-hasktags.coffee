@@ -9,6 +9,11 @@ module.exports = IdeHaskellHasktags =
       default: "hasktags.js"
       description: "Path to hasktags executable; if set to 'hasktags.js'
                     (default) will use bundled ghcjs-powered implementation"
+    ignoreCloseImplementation:
+      type: "boolean"
+      default: "true"
+      description: "Ignore symbols with the same name that are close together
+                    in terms of lines. May require restart."
 
   showList: (editor, tags) ->
     new TagsListView tags, @tags.inProgress, (tag) =>

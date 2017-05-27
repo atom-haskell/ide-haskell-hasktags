@@ -61,9 +61,13 @@ class Tags
       BP = BufferedNodeProcess
     else
       BP = BufferedProcess
+    hasktagsArgs = ['-eRo-' ]
+    if atom.config.get 'ide-haskell-hasktags.ignoreCloseImplementation'
+      hasktagsArgs.push '--ignore-close-implementation'
+    hasktagsArgs.push dir
     new BP
       command: cmd
-      args: ['-eRo-', '--ignore-close-implementation', dir]
+      args: hasktagsArgs
       stdout: (data) =>
         if error?
           throw error
@@ -78,13 +82,12 @@ class Tags
               curfile = new Map
               @tags.set src, curfile
             else
-              rxr = /^.*\x7f(.*)\x01(\d+),(\d+)$/.exec line
+              rxr = /^(.*)\x7f(.*)\x01(\d+),(\d+)$/.exec line
               continue unless rxr?
-              [_, tagName, line, line1] = rxr
-              if curfile.has tagName
-                curfile.get(tagName).push parseInt(line)
-              else
-                curfile.set tagName, [parseInt(line)]
+              [_, context, tagName, line, line1] = rxr
+              if not (curfile.has tagName)
+                curfile.set tagName, []
+              curfile.get(tagName).push {context, line: parseInt(line)}
       exit: =>
         @inProgress = false
 
@@ -93,20 +96,20 @@ class Tags
     unless uri?
       @tags.forEach (tagMap, uri) ->
         tagMap.forEach (lines, tag) ->
-          lines.forEach (line) ->
-            res.push {tag, uri, line}
+          lines.forEach ({context, line}) ->
+            res.push {tag, uri, context, line}
     else
       tagMap = @tags.get uri
       if tagMap?
         tagMap.forEach (lines, tag) ->
-          lines.forEach (line) ->
-            res.push {tag, uri, line}
+          lines.forEach ({context, line}) ->
+            res.push {tag, uri, context, line}
     return res
 
   findTag: (tag) ->
     res = []
     @tags.forEach (tagMap, uri) ->
       lines = tagMap.get(tag)
-      lines?.forEach? (line) ->
-        res.push {tag, uri, line}
+      lines?.forEach? ({context, line}) ->
+        res.push {tag, uri, context, line}
     return res

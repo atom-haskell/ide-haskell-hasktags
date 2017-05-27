@@ -24,12 +24,13 @@ class TagsListView extends SelectListView
     @storeFocusedElement()
     @focusFilterEditor()
 
-  viewForItem: ({tag, uri, line}) ->
+  viewForItem: ({tag, uri, context, line}) ->
     dirs = atom.project.getDirectories()
     if dirs.length is 1
       uri = dirs[0].relativize uri
     """
     <li class='two-lines'>
+      <div class='primary-line' style="float:right;">#{context}</div>
       <div class='primary-line'>#{tag}</div>
       <div class='secondary-line'>#{uri}: #{line}</div>
     </li>
