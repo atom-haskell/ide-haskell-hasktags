@@ -1,3 +1,6 @@
+## 0.0.11
+* Optional ignoreCloseImplementation, show context
+
 ## 0.0.10
 * Fixes, refactors & some specs
 * Show both definition and implementation if far apart
