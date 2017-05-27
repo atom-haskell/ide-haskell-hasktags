@@ -9,10 +9,10 @@ describe 'Tags', ->
     atom.project.setPaths([path])
 
     pkg = atom.packages.loadPackage('ide-haskell-hasktags')
-    pkg.activateNow()
+    try pkg.activateNow()
 
     waitsFor 'tags', ->
-      tags = pkg.mainModule.tags
+      tags = pkg?.mainModule?.tags
 
     waitsFor ->
       not tags.inProgress
@@ -22,16 +22,20 @@ describe 'Tags', ->
       expect(tags.listTags()).toContain
         tag : 'main'
         uri : "#{path}test1.hs"
+        context : 'main '
         line : 2
       expect(tags.listTags()).not.toContain
         tag : 'main'
         uri : "#{path}test1.hs"
+        context : 'main '
         line : 3
       expect(tags.listTags()).toContain
         tag : 'main'
         uri : "#{path}test2.hs"
+        context : 'main '
         line : 2
       expect(tags.listTags()).toContain
         tag : 'main'
         uri : "#{path}test2.hs"
+        context : 'main '
         line : 21
