@@ -1,5 +1,7 @@
 # ide-haskell-hasktags package
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/atom-haskell/ide-haskell-hasktags.svg)](https://greenkeeper.io/)
+
 Hasktags-powered replacement for symbols-view on Haskell projects
 
 This project is in alpha.
