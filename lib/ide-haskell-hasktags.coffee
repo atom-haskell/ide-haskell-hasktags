@@ -24,6 +24,7 @@ module.exports = IdeHaskellHasktags =
     @stack.push
       uri: editor.getURI()
       line: editor.getLastCursor().getBufferRow()
+      column: editor.getLastCursor().getBufferColumn()
     atom.workspace.open tag.uri,
       initialLine: tag.line
       searchAllPanes: true
@@ -40,6 +41,7 @@ module.exports = IdeHaskellHasktags =
         if (prevpos = @stack.pop())?
           atom.workspace.open prevpos.uri,
             initialLine: prevpos.line
+            initialColumn: prevpos.column
             searchAllPanes: true
     @disposables.add atom.commands.add 'atom-text-editor',
       'ide-haskell-hasktags:show-file-tags': ({currentTarget}) =>
