@@ -1,3 +1,9 @@
+## 0.0.12
+* Context menu: s\/Goto\/Go to\/
+* Fix getting wrong crange when going to declaration (Dongwoon Son, #12)
+* Go back to the previous column (Dongwoon Son, #11)
+* Fix spec
+
 ## 0.0.11
 * Optional ignoreCloseImplementation, show context
 
