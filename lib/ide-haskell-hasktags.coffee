@@ -92,7 +92,7 @@ module.exports = IdeHaskellHasktags =
 
     @upidisp.add atom.contextMenu.add
       'atom-text-editor[data-grammar~="haskell"]': [
-          label: 'Goto Declaration'
+          label: 'Go to Declaration'
           command: 'ide-haskell-hasktags:go-to-declaration'
       ]
 
