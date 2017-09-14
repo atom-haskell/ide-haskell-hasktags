@@ -81,7 +81,7 @@ module.exports = IdeHaskellHasktags =
           left = buffer.getTextInRange [start, crange.start]
           crange2.start.column = left.search(/[\w']*$/)
           right = buffer.getTextInRange [crange.end, end]
-          crange2.end.column += right.search(/[^\w']/)
+          crange2.end.column += right.search(/[^\w']|$/)
 
           symbol = buffer.getTextInRange crange2
           tags = @tags.findTag(symbol)
