@@ -1,4 +1,4 @@
-# ide-haskell-hasktags package
+# ide-haskell-hasktags package ![](https://david-dm.org/atom-haskell/ide-haskell-hasktags.svg)
 
 Hasktags-powered replacement for symbols-view on Haskell projects
 
