@@ -14,9 +14,11 @@ export class Tags {
   public inProgress: boolean = false
   private disposables = new CompositeDisposable()
   private tags: Rec = new Map()
+  private paths = atom.project.getPaths()
   constructor() {
     this.disposables.add(atom.project.onDidChangeFiles(this.filesChanged))
-    for (const path of atom.project.getPaths()) {
+    this.disposables.add(atom.project.onDidChangePaths(this.pathsChanged))
+    for (const path of this.paths) {
       this.update(path)
     }
   }
@@ -134,5 +136,20 @@ export class Tags {
           break
       }
     }
+  }
+
+  private pathsChanged = (paths: string[]) => {
+    const removedPaths = this.paths.filter(p => ! paths.includes(p))
+    const addedPaths = paths.filter(p => ! this.paths.includes(p))
+    console.error('pathsChanged', removedPaths, addedPaths)
+    if (removedPaths.length > 0) {
+      Array.from(this.tags.keys()).filter(
+        f => removedPaths.some(p => f.startsWith(p + sep)),
+      ).forEach(k => this.tags.delete(k))
+    }
+    for (const path of addedPaths) {
+      this.update(path)
+    }
+    this.paths = paths
   }
 }
