@@ -12,6 +12,7 @@ let stack: Array<{
   column: number
 }>
 let disposables: CompositeDisposable
+let active = false
 
 async function showList(editor: TextEditor, tags: SymRec[]) {
   const tag = await selectListView(tags, tagsInstance.inProgress)
@@ -35,12 +36,13 @@ function open(editor: TextEditor, tag: SymRec) {
 }
 
 export function activate() {
+  active = true
   stack = []
   tagsInstance = new Tags()
   disposables = new CompositeDisposable()
   disposables.add(atom.commands.add('atom-workspace', {
     'ide-haskell-hasktags:show-tags': () => {
-      if (!tagsInstance) return
+      if (!active) return
       const ed = atom.workspace.getActiveTextEditor()
       if (ed) void showList(ed, tagsInstance.listTags())
     },
@@ -57,7 +59,7 @@ export function activate() {
   }))
   disposables.add(atom.commands.add('atom-text-editor', {
     'ide-haskell-hasktags:show-file-tags': ({ currentTarget }) => {
-      if (!tagsInstance) return
+      if (!active) return
       const editor: TextEditor = (currentTarget as any).getModel()
       const path = editor.getPath()
       if (!path) return
@@ -95,7 +97,7 @@ export function consumeUPI(register: IUPIRegistration) {
 
   disp.add(atom.commands.add('atom-text-editor', {
     'ide-haskell-hasktags:go-to-declaration': ({ currentTarget, detail }) => {
-      if (!tagsInstance) return
+      if (!active) return
       const editor: TextEditor = (currentTarget as any).getModel()
       const buffer = editor.getBuffer()
       const er = upi.getEventRange(editor, detail)
@@ -130,4 +132,5 @@ export function consumeUPI(register: IUPIRegistration) {
 export function deactivate() {
   disposables.dispose()
   tagsInstance.destroy()
+  active = false
 }
