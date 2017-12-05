@@ -12,7 +12,7 @@ describe 'Tags', ->
     try pkg.activateNow()
 
     waitsFor 'tags', ->
-      tags = pkg?.mainModule?.tags
+      tags = pkg?.mainModule?.tagsInstance
 
     waitsFor ->
       not tags.inProgress
