@@ -21,7 +21,7 @@
   "dependencies": {
     "atom-select-list": "^0.7.0",
     "etch": "^0.12.7",
-    "tslib": "^1.8.0"
+    "tslib": "^1.8.1"
   },
   "consumedServices": {
     "ide-haskell-upi": {
@@ -32,7 +32,7 @@
     }
   },
   "devDependencies": {
-    "@types/atom": "^1.22.2",
+    "@types/atom": "^1.22.3",
     "atom-haskell-tslint-rules": "^0.1.1",
     "tslint": "^5.8.0",
     "typescript": "^2.6.2"
