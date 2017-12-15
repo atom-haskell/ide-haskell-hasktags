@@ -22,3 +22,19 @@ Haskell packages:
 Set full path to `hasktags` executable in package settings. For example, if you installed hasktags into `$HOME/.cabal/` (default cabal location), use `/path/to/home/dir/.cabal/bin/hasktags`. Specifics *will* depend on platform.
 
 Since 0.0.7, hasktags is bundled with the package and bundled version is used by default. It runs on top of nodejs though (via the magic of ghcjs), so a "real" binary will likely be faster.
+
+# License
+
+Copyright © 2015 Atom-Haskell
+
+Contributors (by number of commits):
+
+<!-- BEGIN CONTRIBUTORS LIST -->
+* Nikolay Yakimov
+* Dongwoon Son
+
+<!-- END CONTRIBUTORS LIST -->
+
+See the [LICENSE.md][LICENSE] for details.
+
+[LICENSE]: https://github.com/atom-haskell/ide-haskell-hasktags/blob/master/LICENSE.md
