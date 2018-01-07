@@ -1,3 +1,8 @@
+## 0.0.13
+* Remove hasktags.js from git, use version of hasktags.js published on npm
+* Track changes to list of project dirs
+* Typescript conversion
+
 ## 0.0.12
 * Context menu: s\/Goto\/Go to\/
 * Fix getting wrong crange when going to declaration (Dongwoon Son, #12)
