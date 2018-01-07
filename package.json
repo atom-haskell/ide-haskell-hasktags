@@ -16,7 +16,7 @@
   "repository": "https://github.com/atom-haskell/ide-haskell-hasktags",
   "license": "MIT",
   "engines": {
-    "atom": ">=1.22.0 <2.0.0"
+    "atom": ">=1.23.0 <2.0.0"
   },
   "dependencies": {
     "atom-select-list": "^0.7.0",
@@ -32,7 +32,7 @@
     }
   },
   "devDependencies": {
-    "@types/atom": "^1.22.3",
+    "@types/atom": "~1.23.1",
     "atom-haskell-tslint-rules": "^0.1.1",
     "tslint": "^5.8.0",
     "typescript": "^2.6.2"
