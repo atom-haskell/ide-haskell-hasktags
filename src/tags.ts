@@ -1,4 +1,9 @@
-import { CompositeDisposable, BufferedProcess, BufferedNodeProcess, FilesystemChangeEvent } from 'atom'
+import {
+  CompositeDisposable,
+  BufferedProcess,
+  BufferedNodeProcess,
+  FilesystemChangeEvent,
+} from 'atom'
 import { EOL } from 'os'
 import { sep } from 'path'
 
@@ -32,7 +37,9 @@ export class Tags {
     this.inProgress = true
     let fn: boolean = false
     let curfile: Map<string, LineRec[]> = new Map()
-    let cmd: string | undefined = atom.config.get('ide-haskell-hasktags.hasktagsPath')
+    let cmd: string | undefined = atom.config.get(
+      'ide-haskell-hasktags.hasktagsPath',
+    )
     if (!cmd) return
     let BP
     if (cmd === 'hasktags.js') {
@@ -78,19 +85,22 @@ export class Tags {
           }
         }
       },
-      exit: () => { this.inProgress = false },
+      exit: () => {
+        this.inProgress = false
+      },
     })
   }
 
   public listTags(uri?: string) {
     const res: SymRec[] = []
     if (!uri) {
-      this.tags.forEach(
-        (tagMap, uri) =>
-          tagMap.forEach((lines, tag) =>
-            lines.forEach(({ context, line }) =>
-              res.push({ tag, uri, context, line }),
-      )))
+      this.tags.forEach((tagMap, uri) =>
+        tagMap.forEach((lines, tag) =>
+          lines.forEach(({ context, line }) =>
+            res.push({ tag, uri, context, line }),
+          ),
+        ),
+      )
     } else {
       const tagMap = this.tags.get(uri)
       if (tagMap !== undefined) {
@@ -118,7 +128,7 @@ export class Tags {
 
   private filesChanged = (evts: FilesystemChangeEvent) => {
     for (const evt of evts) {
-      if (! evt.path.endsWith('.hs') && ! evt.path.endsWith('.lhs')) continue
+      if (!evt.path.endsWith('.hs') && !evt.path.endsWith('.lhs')) continue
       switch (evt.action) {
         case 'created':
           this.update(evt.path)
@@ -139,13 +149,13 @@ export class Tags {
   }
 
   private pathsChanged = (paths: string[]) => {
-    const removedPaths = this.paths.filter(p => ! paths.includes(p))
-    const addedPaths = paths.filter(p => ! this.paths.includes(p))
+    const removedPaths = this.paths.filter((p) => !paths.includes(p))
+    const addedPaths = paths.filter((p) => !this.paths.includes(p))
     console.error('pathsChanged', removedPaths, addedPaths)
     if (removedPaths.length > 0) {
-      Array.from(this.tags.keys()).filter(
-        f => removedPaths.some(p => f.startsWith(p + sep)),
-      ).forEach(k => this.tags.delete(k))
+      Array.from(this.tags.keys())
+        .filter((f) => removedPaths.some((p) => f.startsWith(p + sep)))
+        .forEach((k) => this.tags.delete(k))
     }
     for (const path of addedPaths) {
       this.update(path)
