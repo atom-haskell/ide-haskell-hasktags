@@ -36,7 +36,7 @@ export class Tags {
     if (!cmd) return
     let BP
     if (cmd === 'hasktags.js') {
-      cmd = `${__dirname}${sep}..${sep}bin${sep}hasktags.js`
+      cmd = require.resolve('@atom-haskell/hasktags-js')
       BP = BufferedNodeProcess
     } else {
       BP = BufferedProcess

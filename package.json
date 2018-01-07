@@ -21,6 +21,7 @@
   "dependencies": {
     "atom-select-list": "^0.7.0",
     "etch": "^0.12.7",
+    "@atom-haskell/hasktags-js": "^0.1.1",
     "tslib": "^1.8.1"
   },
   "consumedServices": {
