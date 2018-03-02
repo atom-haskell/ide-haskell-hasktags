@@ -1,11 +1,7 @@
-import {
-  CompositeDisposable,
-  BufferedProcess,
-  BufferedNodeProcess,
-  FilesystemChangeEvent,
-} from 'atom'
+import { CompositeDisposable, FilesystemChangeEvent } from 'atom'
 import { EOL } from 'os'
 import { sep } from 'path'
+import { execFile } from 'child_process'
 
 interface LineRec {
   context: string
@@ -40,24 +36,36 @@ export class Tags {
     let cmd: string | undefined = atom.config.get(
       'ide-haskell-hasktags.hasktagsPath',
     )
-    if (!cmd) return
-    let BP
+    const env = Object.create(process.env)
+    const args = []
     if (cmd === 'hasktags.js') {
-      cmd = require.resolve('@atom-haskell/hasktags-js')
-      BP = BufferedNodeProcess
-    } else {
-      BP = BufferedProcess
+      env.ELECTRON_RUN_AS_NODE = 1
+      env.ELECTRON_NO_ATTACH_CONSOLE = 1
+      cmd = process.execPath
+      args.push('--no-deprecation')
+      args.push(require.resolve('@atom-haskell/hasktags-js'))
     }
-    const hasktagsArgs = ['-eRo-']
+    args.push('-eRo-')
     if (atom.config.get('ide-haskell-hasktags.ignoreCloseImplementation')) {
-      hasktagsArgs.push('--ignore-close-implementation')
+      args.push('--ignore-close-implementation')
     }
-    hasktagsArgs.push(path)
-    // tslint:disable-next-line:no-unused-expression
-    new BP({
-      command: cmd,
-      args: hasktagsArgs,
-      stdout: (data: string) => {
+    args.push(path)
+    execFile(cmd, args, { env, encoding: 'utf8' }, (error, data, stderr) => {
+      try {
+        if (error) {
+          switch (stderr) {
+            case '<stdout>: hFlush: illegal operation (handle is closed)':
+              break
+            default:
+              console.warn('hasktags stderr', stderr)
+              atom.notifications.addError('Failed to run hasktags', {
+                detail: error.message,
+                stack: error.stack,
+                dismissable: true,
+              })
+              return
+          }
+        }
         const lines = data.split(EOL)
         for (const line of lines.slice(0, -1)) {
           switch (true) {
@@ -84,10 +92,9 @@ export class Tags {
               obj.push({ context, line: parseInt(lineNo, 10) })
           }
         }
-      },
-      exit: () => {
+      } finally {
         this.inProgress = false
-      },
+      }
     })
   }
 
@@ -151,7 +158,6 @@ export class Tags {
   private pathsChanged = (paths: string[]) => {
     const removedPaths = this.paths.filter((p) => !paths.includes(p))
     const addedPaths = paths.filter((p) => !this.paths.includes(p))
-    console.error('pathsChanged', removedPaths, addedPaths)
     if (removedPaths.length > 0) {
       Array.from(this.tags.keys())
         .filter((f) => removedPaths.some((p) => f.startsWith(p + sep)))
