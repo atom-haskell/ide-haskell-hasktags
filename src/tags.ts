@@ -50,7 +50,7 @@ export class Tags {
       args.push('--ignore-close-implementation')
     }
     args.push(path)
-    execFile(cmd, args, { env, encoding: 'utf8' }, (error, data, stderr) => {
+    execFile(cmd, args, { env, encoding: 'utf8', maxBuffer: Infinity }, (error, data, stderr) => {
       try {
         if (error) {
           switch (stderr) {
