@@ -30,8 +30,9 @@ Copyright © 2015 Atom-Haskell
 Contributors (by number of commits):
 
 <!-- BEGIN CONTRIBUTORS LIST -->
-* Nikolay Yakimov
-* Dongwoon Son
+-   Nikolay Yakimov
+-   Dongwoon Son
+-   Mauro Bieg
 
 <!-- END CONTRIBUTORS LIST -->
 
