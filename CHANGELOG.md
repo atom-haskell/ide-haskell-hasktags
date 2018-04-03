@@ -1,3 +1,7 @@
+## 0.0.15
+
+-   Increase output buffer for execFile (Mauro Bieg)
+
 ## 0.0.14
 
 -   Use child\_process instead of BufferedProcess
