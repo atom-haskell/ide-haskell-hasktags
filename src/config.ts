@@ -7,7 +7,7 @@ export const config = {
   },
   ignoreCloseImplementation: {
     type: 'boolean',
-    default: 'true',
+    default: 'false',
     description: `Ignore symbols with the same name that are close together
 in terms of lines. May require restart.`,
   },
