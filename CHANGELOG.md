@@ -1,3 +1,8 @@
+## 0.0.16
+
+-   Bump dependencies (including hasktags)
+-   Disable ignoreCloseImplementation by default (corresponding option removed upstream)
+
 ## 0.0.15
 
 -   Increase output buffer for execFile (Mauro Bieg)
