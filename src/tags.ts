@@ -2,6 +2,7 @@ import { CompositeDisposable, FilesystemChangeEvent } from 'atom'
 import { EOL } from 'os'
 import { sep } from 'path'
 import { execFile } from 'child_process'
+import { IgnoredNames } from './ignored'
 
 interface LineRec {
   context: string
@@ -16,6 +17,7 @@ export class Tags {
   private disposables = new CompositeDisposable()
   private tags: Rec = new Map()
   private paths = atom.project.getPaths()
+  private ignored = new IgnoredNames()
   constructor() {
     this.disposables.add(atom.project.onDidChangeFiles(this.filesChanged))
     this.disposables.add(atom.project.onDidChangePaths(this.pathsChanged))
@@ -50,52 +52,57 @@ export class Tags {
       args.push('--ignore-close-implementation')
     }
     args.push(path)
-    execFile(cmd, args, { env, encoding: 'utf8', maxBuffer: Infinity }, (error, data, stderr) => {
-      try {
-        if (error) {
-          switch (stderr) {
-            case '<stdout>: hFlush: illegal operation (handle is closed)':
-              break
-            default:
-              console.warn('hasktags stderr', stderr)
-              atom.notifications.addError('Failed to run hasktags', {
-                detail: error.message,
-                stack: error.stack,
-                dismissable: true,
-              })
-              return
+    execFile(
+      cmd,
+      args,
+      { env, encoding: 'utf8', maxBuffer: Infinity },
+      (error, data, stderr) => {
+        try {
+          if (error) {
+            switch (stderr) {
+              case '<stdout>: hFlush: illegal operation (handle is closed)':
+                break
+              default:
+                console.warn('hasktags stderr', stderr)
+                atom.notifications.addError('Failed to run hasktags', {
+                  detail: error.message,
+                  stack: error.stack,
+                  dismissable: true,
+                })
+                return
+            }
           }
-        }
-        const lines = data.split(EOL)
-        for (const line of lines.slice(0, -1)) {
-          switch (true) {
-            case line === '\x0c':
-              fn = true
-              break
-            case fn:
-              fn = false
-              const res = /^(.*),\d+$/.exec(line)
-              if (res === null) continue
-              const [, src] = res
-              curfile = new Map()
-              this.tags.set(src, curfile)
-              break
-            default:
-              const rxr = /^(.*)\x7f(.*)\x01(\d+),(\d+)$/.exec(line)
-              if (rxr === null) continue
-              const [, context, tagName, lineNo] = rxr
-              let obj = curfile.get(tagName)
-              if (obj === undefined) {
-                obj = []
-                curfile.set(tagName, obj)
-              }
-              obj.push({ context, line: parseInt(lineNo, 10) })
+          const lines = data.split(EOL)
+          for (const line of lines.slice(0, -1)) {
+            switch (true) {
+              case line === '\x0c':
+                fn = true
+                break
+              case fn:
+                fn = false
+                const res = /^(.*),\d+$/.exec(line)
+                if (res === null) continue
+                const [, src] = res
+                curfile = new Map()
+                this.tags.set(src, curfile)
+                break
+              default:
+                const rxr = /^(.*)\x7f(.*)\x01(\d+),(\d+)$/.exec(line)
+                if (rxr === null) continue
+                const [, context, tagName, lineNo] = rxr
+                let obj = curfile.get(tagName)
+                if (obj === undefined) {
+                  obj = []
+                  curfile.set(tagName, obj)
+                }
+                obj.push({ context, line: parseInt(lineNo, 10) })
+            }
           }
+        } finally {
+          this.inProgress = false
         }
-      } finally {
-        this.inProgress = false
-      }
-    })
+      },
+    )
   }
 
   public listTags(uri?: string) {
@@ -134,8 +141,16 @@ export class Tags {
   }
 
   private filesChanged = (evts: FilesystemChangeEvent) => {
+    const dirs = atom.project.getDirectories()
     for (const evt of evts) {
       if (!evt.path.endsWith('.hs') && !evt.path.endsWith('.lhs')) continue
+      if (this.ignored.matches(evt.path)) continue
+      if (atom.config.get('ide-haskell-hasktags.ignoreVCSIgnoredPaths')) {
+        const idx = dirs.findIndex((x) => x.contains(evt.path))
+        if (idx === -1) continue
+        const repo = atom.project.getRepositories()[idx]
+        if (repo && repo.isPathIgnored(evt.path)) continue
+      }
       switch (evt.action) {
         case 'created':
           this.update(evt.path)

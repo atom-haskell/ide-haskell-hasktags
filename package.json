@@ -22,6 +22,7 @@
     "@atom-haskell/hasktags-js": "^0.1.2",
     "atom-select-list": "^0.7.2",
     "etch": "^0.14.0",
+    "minimatch": "^3.0.4",
     "tslib": "^1.9.3"
   },
   "consumedServices": {
@@ -34,6 +35,7 @@
   },
   "devDependencies": {
     "@types/atom": "^1.31.0",
+    "@types/minimatch": "^3.0.3",
     "atom-haskell-tslint-rules": "^0.2.2",
     "prettier": "^1.15.3",
     "tslint": "^5.11.0",
