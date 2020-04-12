@@ -18,12 +18,20 @@
   "engines": {
     "atom": ">=1.23.0 <2.0.0"
   },
+  "scripts": {
+    "build": "tsc -p .",
+    "prettier": "prettier --write 'src/**/*.ts?(x)' 'spec/**/*.ts?(x)'",
+    "prettier-check": "prettier -l 'src/**/*.ts' 'spec/**/*.ts'",
+    "typecheck": "tsc --noEmit -p .",
+    "lint": "tslint --project .",
+    "test": "npm run typecheck && npm run lint && npm run prettier-check"
+  },
   "dependencies": {
     "@atom-haskell/hasktags-js": "^0.1.2",
     "atom-select-list": "^0.7.2",
     "etch": "^0.14.0",
     "minimatch": "^3.0.4",
-    "tslib": "^1.9.3"
+    "tslib": "^1.11.1"
   },
   "consumedServices": {
     "ide-haskell-upi": {
@@ -34,11 +42,12 @@
     }
   },
   "devDependencies": {
-    "@types/atom": "^1.31.0",
+    "@types/atom": "^1.40.1",
     "@types/minimatch": "^3.0.3",
     "atom-haskell-tslint-rules": "^0.2.2",
-    "prettier": "^1.15.3",
-    "tslint": "^5.11.0",
-    "typescript": "^3.2.1"
+    "prettier": "^1",
+    "tslint": "^6.1.1",
+    "typescript": "^3.8.3",
+    "typescript-tslint-plugin": "^0.5.5"
   }
 }
