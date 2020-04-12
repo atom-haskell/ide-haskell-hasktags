@@ -1,3 +1,8 @@
+## 0.0.17
+
+-   Bump dependencies
+-   Ignore atom ignored names and vcs ignored paths
+
 ## 0.0.16
 
 -   Bump dependencies (including hasktags)
